@@ -1,0 +1,164 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Script file="src/main.lua" />
+    <Frame name="Longroll_main_frame" parent="UIParent" toplevel="true" enableMouse="true" movable="true">
+        <Size>
+            <AbsDimension x="200" y="200" />
+        </Size>
+        <Anchors>
+            <Anchor point="CENTER" />
+        </Anchors>
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets>
+                <AbsInset left="11" right="12" top="12" bottom="11" />
+            </BackgroundInsets>
+            <TileSize>
+                <AbsValue val="32" />
+            </TileSize>
+            <EdgeSize>
+                <AbsValue val="32" />
+            </EdgeSize>
+        </Backdrop>
+        <Layers>
+            <Layer>
+                <FontString text="LongRoll" inherits="GameFontNormal">
+                    <Size x="100" y="45" />
+                    <Anchors>
+                        <Anchor point="TOP" />
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnDragStart>Start_Moving_Frame()</OnDragStart>
+            <OnDragStop>Stop_Moving_Frame()</OnDragStop>
+        </Scripts>
+        <frames>
+            <Button name="button_close_window" inherits="UIPanelButtonTemplate" text="X">
+                <Size x="22" y="21" />
+                <Anchors>
+                    <Anchor point="TOPRIGHT">
+                        <Offset x="-15" y="-15" />
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>Hide_Frames();</OnClick>
+                </Scripts>
+            </Button>
+            <Button name="button_print_raid_info" inherits="UIPanelButtonTemplate" text="P">
+                <Size x="22" y="21" />
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset x="15" y="-15" />
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>Print_Raid()</OnClick>
+                </Scripts>
+            </Button>
+            <CheckButton name="button_leader_join" inherits="OptionsCheckButtonTemplate" checked="false">
+                <Size x="25" y="25" />
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset x="25" y="-45" />
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>Toggle_Leader_Join()</OnClick>
+                </Scripts>
+            </CheckButton>
+            <EditBox name="editbox_lower_bound" letters="7" autoFocus="false" numeric="true">
+                <Size x="55" y="20" />
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset x="40" y="-75" />
+                    </Anchor>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Left">
+                            <Size x="75" y="32" />
+                            <Anchors>
+                                <Anchor point="LEFT">
+                                    <Offset x="-15" y="0" />
+                                </Anchor>
+                            </Anchors>
+                            <TexCoords left="0" right="0.2" top="0" bottom="1.0" />
+                        </Texture>
+                        <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Right">
+                            <Size x="75" y="32" />
+                            <Anchors>
+                                <Anchor point="RIGHT">
+                                    <Offset x="15" y="0" />
+                                </Anchor>
+                            </Anchors>
+                            <TexCoords left="0.7" right="1.0" top="0" bottom="1.0" />
+                        </Texture>
+                    </Layer>
+                    <Layer>
+                        <FontString text="Lower bound" inherits="GameFontNormal">
+                            <Size x="50" y="45" />
+                            <Anchors>
+                                <Anchor point="LEFT">
+                                    <Offset x="70" y="0" />
+                                </Anchor>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <FontString inherits="ChatFontNormal" />
+            </EditBox>
+            <EditBox name="editbox_upper_bound" letters="7" autoFocus="false" numeric="true">
+                <Size x="55" y="20" />
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset x="40" y="-110" />
+                    </Anchor>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Left">
+                            <Size x="75" y="32" />
+                            <Anchors>
+                                <Anchor point="LEFT">
+                                    <Offset x="-15" y="0" />
+                                </Anchor>
+                            </Anchors>
+                            <TexCoords left="0" right="0.2" top="0" bottom="1.0" />
+                        </Texture>
+                        <Texture file="Interface\ChatFrame\UI-ChatInputBorder-Right">
+                            <Size x="75" y="32" />
+                            <Anchors>
+                                <Anchor point="RIGHT">
+                                    <Offset x="15" y="0" />
+                                </Anchor>
+                            </Anchors>
+                            <TexCoords left="0.7" right="1.0" top="0" bottom="1.0" />
+                        </Texture>
+                    </Layer>
+                    <Layer>
+                        <FontString text="Upper bound" inherits="GameFontNormal">
+                            <Size x="50" y="45" />
+                            <Anchors>
+                                <Anchor point="LEFT">
+                                    <Offset x="70" y="0" />
+                                </Anchor>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <FontString inherits="ChatFontNormal" />
+            </EditBox>
+            <Button name="button_start_roll" inherits="UIPanelButtonTemplate" text="Roll!">
+                <Size x="150" y="30" />
+                <Anchors>
+                    <Anchor point="BOTTOM">
+                        <Offset x="0" y="20" />
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>Start_Roll()</OnClick>
+                </Scripts>
+            </Button>
+        </frames>
+    </Frame>
+</Ui>

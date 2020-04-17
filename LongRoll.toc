@@ -1,0 +1,7 @@
+## Interface: 80300
+## Title: LongRoll
+## Notes: Made for Longboy deathrolls.
+## Author: Megalla - Azjol-Nerub (EU)
+## Version: 1.0
+LongRoll.xml
+src/main.lua
