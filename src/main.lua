@@ -83,6 +83,12 @@ function Clear_Raid_Snapshot()
     print("Cleared everything")
 end
 
+function Print_help()
+    print("LongRoll Usage:");
+    print("/lr show - Shows the UI");
+    print("/lr hide - Hides the UI");
+end
+
 function Print_Raid()
     print("Printing raid info!")
     print("---------------");
@@ -216,6 +222,7 @@ function LongRollCommands(msg, editbox)
         player_frame:Hide();
     else
         print("Did not understand this command");
+        Print_help();
     end
 end
 

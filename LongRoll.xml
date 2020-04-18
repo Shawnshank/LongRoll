@@ -29,6 +29,7 @@
             </Layer>
         </Layers>
         <Scripts>
+            <OnLoad>Longroll_main_frame:Hide()</OnLoad>
             <OnDragStart>Start_Moving_Frame()</OnDragStart>
             <OnDragStop>Stop_Moving_Frame()</OnDragStop>
         </Scripts>
