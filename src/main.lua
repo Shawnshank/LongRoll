@@ -268,9 +268,6 @@ function Find_lowest_rolls()
 end
 
 EventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4, arg5, arg6)
-	if(event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER") then
-		print("Raid Message Event Captured!");
-    end
     if(event == "CHAT_MSG_SYSTEM" and isRolling) then
         local name, roll, range_low, range_high = Find_Roll(event, arg1, arg2, arg3, arg4, arg5, arg6);
         local playerIsInRaid = false;
