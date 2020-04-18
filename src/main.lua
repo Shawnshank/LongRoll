@@ -8,6 +8,18 @@ local high_range_limit = 1000;
 local low_range_limit = 1;
 local roll_phrase = "Roll!";
 local player_frame_font_strings = {};
+local sorted_roll_list = {};
+
+-- TESTING PURPOSE
+--local test_players_roll = {};
+--test_players_roll["a"] = 1000;
+--test_players_roll["b"] = 328;
+--test_players_roll["c"] = 687;
+--test_players_roll["d"] = 254;
+--test_players_roll["e"] = 473;
+--test_players_roll["f"] = 100;
+--test_players_roll["g"] = 564;
+-- --------------------------
 
 local EventFrame = CreateFrame("frame", "EventFrame");
 EventFrame:RegisterEvent("CHAT_MSG_SYSTEM");
@@ -68,6 +80,81 @@ function Get_Raid_Snapshot()
             end
         end
     end
+    -- TESTING PURPOSE
+    --for playerNameTest, _ in pairs(test_players_roll) do
+    --    if (playerNameTest) then
+    --        raid_snapshot[playerNameTest] = 1;
+    --    end
+    --end
+    --for playerNameTest, roll in pairs(test_players_roll) do
+    --    if (playerNameTest) then
+    --        roll_list[playerNameTest] = roll;
+    --    end
+    --end
+    -- --------------------------
+end
+
+function Shallow_Copy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in pairs(orig) do
+            copy[orig_key] = orig_value
+        end
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+function Deep_Copy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in next, orig, nil do
+            copy[deepcopy(orig_key)] = deepcopy(orig_value)
+        end
+        setmetatable(copy, deepcopy(getmetatable(orig)))
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+function Sort_Roll_list()
+    local roll_list_snapshot = Shallow_Copy(roll_list);
+    local index = 1;
+    local isSorting = true;
+    while isSorting do
+        local current_lowest = 10000000;
+        local current_lowest_player = "test";
+        for playerName, roll in pairs(roll_list_snapshot) do
+            if tonumber(roll) < tonumber(current_lowest) then
+                if index > 1 then
+                    for i = 1, Table_Length(sorted_roll_list) do
+                        if playerName == sorted_roll_list[i] then
+                            print("Already sorted")
+                        else
+                            current_lowest = roll;
+                            current_lowest_player = playerName;
+                        end
+                    end
+                else
+                    current_lowest = roll;
+                    current_lowest_player = playerName;
+                end
+            end
+        end
+        roll_list_snapshot[current_lowest_player] = nil;
+        if current_lowest_player == "test" then
+            isSorting = false
+        else
+            sorted_roll_list[index] = current_lowest_player;
+        end
+        index = index + 1;
+    end
 end
 
 function Clear_Raid_Snapshot()
@@ -75,12 +162,11 @@ function Clear_Raid_Snapshot()
     for playerName, _ in pairs(raid_snapshot) do
         local ref = player_frame_font_strings[playerName];
         ref:SetTextColor(1, 1, 1, 0);
-        --ref:SetParent(nil);
-        --ref:ClearAllPoints();
     end
     raid_snapshot = {};
     roll_list = {};
-    print("Cleared everything")
+    sorted_roll_list = {};
+    print("Cleared previous rolls")
 end
 
 function Print_help()
@@ -90,15 +176,13 @@ function Print_help()
 end
 
 function Print_Raid()
-    print("Printing raid info!")
+    print("Printing internal roll info")
     print("---------------");
     for playerName, _ in pairs(raid_snapshot) do
         print(string.format("%s: %s", playerName, raid_snapshot[playerName]));
     end
     print("---------------");
-    for playerName, _ in pairs(roll_list) do
-        print(string.format("%s: %s", playerName, roll_list[playerName]));
-    end
+    Sort_Roll_list();
 end
 
 local function Find_Roll(event, arg1, arg2, arg3, arg4, arg5, arg6)
@@ -120,6 +204,7 @@ function Table_Length(T)
 end
 
 function Update_Player_Frame()
+    local current_lowest = 1000000;
     for playerName, hasRolled in pairs(raid_snapshot) do
         local string_ref = player_frame_font_strings[playerName];
         if roll_list[playerName] == nil then
@@ -141,7 +226,7 @@ function Start_Roll()
     isRolling = true;
     high_range_limit = editbox_upper_bound:GetNumber();
     low_range_limit = editbox_lower_bound:GetNumber();
-    --SendChatMessage(roll_phrase, "RAID_WARNING");
+    SendChatMessage(roll_phrase, "RAID_WARNING");
 
     local index = 0;
     
@@ -151,28 +236,35 @@ function Start_Roll()
         newPlayerString:SetFont("Fonts\\ARIALN.TTF", 16, "OUTLINE");
         newPlayerString:SetShadowOffset(1, -1)
         newPlayerString:SetShadowColor(1,1,1)
-        newPlayerString:SetPoint("TOPLEFT", 20 ,-50 - index * 20);
+        newPlayerString:SetPoint("TOPLEFT", 20 ,-20 - index * 20);
         newPlayerString:SetFormattedText("%s: ", playerName);
         newPlayerString:SetTextColor(0, 0, 0);
         index = index + 1;
     end
-    player_frame:SetHeight(index * 20 + 50 + 10)
+    player_frame:SetHeight(index * 20 + 30)
     Update_Player_Frame();
     player_frame:Show()
 
 end
 
 function Compare(a,b)
-    return a[1] < b[1]
+    return a < b
 end
 
 function Find_lowest_rolls()
-    table.sort(roll_list, Compare);
-    print("Sorted roll list:");
+    Sort_Roll_list();
+    local fontstring_ref = player_frame_font_strings[sorted_roll_list[1]];
+    fontstring_ref:SetTextColor(1, 0, 0.5);
+    local fontstring_ref = player_frame_font_strings[sorted_roll_list[2]];
+    fontstring_ref:SetTextColor(1, 0.5, 0);
+    print("Players sorted by lowest roll:");
     print("-----------------");
-    for playerName, _ in pairs(roll_list) do
-        print(string.format("%s: %s", playerName, roll_list[playerName]));
+    local index = 1;
+    for index=1,Table_Length(sorted_roll_list) do
+        local playername = tostring(sorted_roll_list[index]);
+        print(index, ": ", playername, " - ", roll_list[playername]);
     end
+    print("-----------------");
 end
 
 EventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4, arg5, arg6)
